@@ -1,0 +1,11 @@
+LOAD CSV WITH HEADERS FROM "file:///file3.csv" AS row 
+CREATE(NSP:NSparks{ParksName:row.parkName,RateType:row.RateType,PartySize:toInteger(row.PartySize),BookingType:row.BookingType,Equipment:row.Equipment})
+
+CREATE INDEX ON :NSparks(RateType)
+
+MATCH (a:NSparks),(b:NSparks) WHERE NOT a=b AND a.RateType=b.RateType CREATE UNIQUE(a)-[r:NeghbourByRate]->(b)
+
+MATCH (a:NSparks), (b:NSparks) WHERE NOT a=b AND a.Equipment=b.Equipment CREATE UNIQUE (a)-[r:NeghbourByEquipment]->(b)
+
+
+MATCH (n:NSparks) RETURN n order by n.PartySize DESC limit 1
